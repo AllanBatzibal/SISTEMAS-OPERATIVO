@@ -76,6 +76,22 @@ public partial class FormPrincipal : Form
         dgvFinalizados.SelectionChanged += dgvFinalizados_SelectionChanged;
         dgvEjecucion.SelectionChanged += dgvEjecucion_SelectionChanged;
         dgvEspera.SelectionChanged += dgvEspera_SelectionChanged;
+
+        cboPoliticaCola.SelectedIndex = 0;
+    }
+
+    private void cboPoliticaCola_SelectedIndexChanged(object? sender, EventArgs e)
+    {
+        if (cboPoliticaCola.SelectedIndex < 0)
+        {
+            return;
+        }
+
+        _gestor.Politica = cboPoliticaCola.SelectedIndex == 0
+            ? PoliticaCola.FifoEstricta
+            : PoliticaCola.RecorrerTodaLaCola;
+
+        _gestor.RevisarColaEspera();
     }
 
     private static void ConfigurarDataGridView(DataGridView grid)

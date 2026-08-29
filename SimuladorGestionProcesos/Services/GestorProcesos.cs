@@ -18,8 +18,13 @@ public class GestorProcesos
     private readonly GeneradorPID _generadorPid = new();
 
     public List<Proceso> ProcesosEjecucion { get; } = new();
-    public Queue<Proceso> ColaEspera { get; } = new();
+    public List<Proceso> ColaEspera { get; } = new();
     public List<Proceso> ProcesosFinalizados { get; } = new();
+
+    /// <summary>
+    /// Política usada al revisar la cola de espera cuando se libera memoria.
+    /// </summary>
+    public PoliticaCola Politica { get; set; } = PoliticaCola.FifoEstricta;
 
     /// <summary>
     /// Se dispara cuando cambia el estado de memoria o de algún proceso.
@@ -129,7 +134,7 @@ public class GestorProcesos
             else
             {
                 proceso.Estado = "En espera";
-                ColaEspera.Enqueue(proceso);
+                ColaEspera.Add(proceso);
             }
         }
 
@@ -323,11 +328,7 @@ public class GestorProcesos
             }
 
             ProcesosEjecucion.Clear();
-
-            while (ColaEspera.Count > 0)
-            {
-                ColaEspera.Dequeue();
-            }
+            ColaEspera.Clear();
 
             ProcesosFinalizados.Clear();
             _memoriaUtilizada = 0;
@@ -440,17 +441,53 @@ public class GestorProcesos
 
     private void RevisarColaEsperaInterna()
     {
+        if (Politica == PoliticaCola.FifoEstricta)
+        {
+            RevisarColaFifoEstrictaInterna();
+        }
+        else
+        {
+            RevisarColaCompletaInterna();
+        }
+    }
+
+    /// <summary>
+    /// Revisa la cola en orden FIFO estricto: se detiene si el proceso al frente no cabe.
+    /// </summary>
+    private void RevisarColaFifoEstrictaInterna()
+    {
         while (ColaEspera.Count > 0)
         {
-            Proceso siguiente = ColaEspera.Peek();
+            Proceso siguiente = ColaEspera[0];
 
             if (ObtenerMemoriaDisponibleInterna() < siguiente.MemoriaRequerida)
             {
                 break;
             }
 
-            ColaEspera.Dequeue();
+            ColaEspera.RemoveAt(0);
             IniciarProcesoInterno(siguiente);
+        }
+    }
+
+    /// <summary>
+    /// Recorre toda la cola e intenta admitir a cada proceso que quepa en RAM.
+    /// </summary>
+    private void RevisarColaCompletaInterna()
+    {
+        for (int indice = 0; indice < ColaEspera.Count;)
+        {
+            Proceso proceso = ColaEspera[indice];
+
+            if (ObtenerMemoriaDisponibleInterna() >= proceso.MemoriaRequerida)
+            {
+                ColaEspera.RemoveAt(indice);
+                IniciarProcesoInterno(proceso);
+            }
+            else
+            {
+                indice++;
+            }
         }
     }
 
@@ -476,18 +513,7 @@ public class GestorProcesos
     /// </summary>
     private void CancelarProcesoEnColaInterno(Proceso proceso)
     {
-        var procesosRestantes = ColaEspera.Where(p => p.PID != proceso.PID).ToList();
-
-        while (ColaEspera.Count > 0)
-        {
-            ColaEspera.Dequeue();
-        }
-
-        foreach (var procesoRestante in procesosRestantes)
-        {
-            ColaEspera.Enqueue(procesoRestante);
-        }
-
+        ColaEspera.Remove(proceso);
         proceso.Estado = "Cancelado";
     }
 
