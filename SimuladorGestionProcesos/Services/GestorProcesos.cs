@@ -242,6 +242,39 @@ public class GestorProcesos
     }
 
     /// <summary>
+    /// Obtiene una copia segura de los procesos en ejecución para lectura en la interfaz.
+    /// </summary>
+    public List<Proceso> ObtenerProcesosEnEjecucion()
+    {
+        lock (_bloqueo)
+        {
+            return ProcesosEjecucion.ToList();
+        }
+    }
+
+    /// <summary>
+    /// Obtiene una copia segura de la cola de espera para lectura en la interfaz.
+    /// </summary>
+    public List<Proceso> ObtenerColaEspera()
+    {
+        lock (_bloqueo)
+        {
+            return ColaEspera.ToList();
+        }
+    }
+
+    /// <summary>
+    /// Obtiene una copia segura de los procesos finalizados para lectura en la interfaz.
+    /// </summary>
+    public List<Proceso> ObtenerProcesosFinalizados()
+    {
+        lock (_bloqueo)
+        {
+            return ProcesosFinalizados.ToList();
+        }
+    }
+
+    /// <summary>
     /// Cancela manualmente un proceso en ejecución o en la cola de espera.
     /// </summary>
     public bool CancelarProceso(Proceso proceso)

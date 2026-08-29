@@ -284,7 +284,7 @@ public partial class FormPrincipal : Form
     {
         dgvEjecucion.Rows.Clear();
 
-        foreach (var proceso in _gestor.ProcesosEjecucion)
+        foreach (var proceso in _gestor.ObtenerProcesosEnEjecucion())
         {
             int indice = dgvEjecucion.Rows.Add(
                 proceso.PID,
@@ -304,7 +304,7 @@ public partial class FormPrincipal : Form
     {
         dgvEspera.Rows.Clear();
 
-        foreach (var proceso in _gestor.ColaEspera)
+        foreach (var proceso in _gestor.ObtenerColaEspera())
         {
             int indice = dgvEspera.Rows.Add(
                 proceso.PID,
@@ -323,7 +323,7 @@ public partial class FormPrincipal : Form
     {
         dgvFinalizados.Rows.Clear();
 
-        foreach (var proceso in _gestor.ProcesosFinalizados)
+        foreach (var proceso in _gestor.ObtenerProcesosFinalizados())
         {
             int indice = dgvFinalizados.Rows.Add(
                 proceso.PID,
@@ -416,7 +416,9 @@ public partial class FormPrincipal : Form
 
     private void btnExportarCsv_Click(object sender, EventArgs e)
     {
-        if (_gestor.ProcesosFinalizados.Count == 0)
+        var procesosFinalizados = _gestor.ObtenerProcesosFinalizados();
+
+        if (procesosFinalizados.Count == 0)
         {
             MessageBox.Show(
                 "No hay procesos finalizados para exportar.",
@@ -440,8 +442,7 @@ public partial class FormPrincipal : Form
 
         try
         {
-            var procesos = _gestor.ProcesosFinalizados.ToList();
-            ExportadorCsv.ExportarProcesosFinalizados(procesos, dialogoGuardado.FileName);
+            ExportadorCsv.ExportarProcesosFinalizados(procesosFinalizados, dialogoGuardado.FileName);
 
             MessageBox.Show(
                 $"Archivo exportado correctamente:{Environment.NewLine}{dialogoGuardado.FileName}",
