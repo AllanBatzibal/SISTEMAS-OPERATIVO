@@ -268,6 +268,9 @@ public partial class FormPrincipal : Form
 
     private void ActualizarGridEjecucion()
     {
+        int? pidSeleccionado = ObtenerPidFilaSeleccionada(dgvEjecucion);
+        int primeraFilaVisible = dgvEjecucion.FirstDisplayedScrollingRowIndex;
+
         dgvEjecucion.Rows.Clear();
 
         foreach (var proceso in _gestor.ObtenerProcesosEnEjecucion())
@@ -283,11 +286,15 @@ public partial class FormPrincipal : Form
             dgvEjecucion.Rows[indice].Tag = proceso;
         }
 
+        RestaurarSeleccionYScroll(dgvEjecucion, pidSeleccionado, primeraFilaVisible);
         ActualizarEstadoBotonCancelarEjecucion();
     }
 
     private void ActualizarGridEspera()
     {
+        int? pidSeleccionado = ObtenerPidFilaSeleccionada(dgvEspera);
+        int primeraFilaVisible = dgvEspera.FirstDisplayedScrollingRowIndex;
+
         dgvEspera.Rows.Clear();
 
         foreach (var proceso in _gestor.ObtenerColaEspera())
@@ -302,11 +309,15 @@ public partial class FormPrincipal : Form
             dgvEspera.Rows[indice].Tag = proceso;
         }
 
+        RestaurarSeleccionYScroll(dgvEspera, pidSeleccionado, primeraFilaVisible);
         ActualizarEstadoBotonCancelarEspera();
     }
 
     private void ActualizarGridFinalizados()
     {
+        int? pidSeleccionado = ObtenerPidFilaSeleccionada(dgvFinalizados);
+        int primeraFilaVisible = dgvFinalizados.FirstDisplayedScrollingRowIndex;
+
         dgvFinalizados.Rows.Clear();
 
         foreach (var proceso in _gestor.ObtenerProcesosFinalizados())
@@ -321,7 +332,75 @@ public partial class FormPrincipal : Form
             dgvFinalizados.Rows[indice].Tag = proceso;
         }
 
+        RestaurarSeleccionYScroll(dgvFinalizados, pidSeleccionado, primeraFilaVisible);
         ActualizarEstadoBotonReejecutar();
+    }
+
+    /// <summary>
+    /// Obtiene el PID de la fila seleccionada antes de reconstruir un grid.
+    /// </summary>
+    private static int? ObtenerPidFilaSeleccionada(DataGridView grid)
+    {
+        DataGridViewRow? fila = grid.SelectedRows.Count > 0
+            ? grid.SelectedRows[0]
+            : grid.CurrentRow;
+
+        if (fila is null)
+        {
+            return null;
+        }
+
+        object? valorPid = fila.Cells["PID"].Value;
+
+        if (valorPid is int pidEntero)
+        {
+            return pidEntero;
+        }
+
+        return int.TryParse(valorPid?.ToString(), out int pid) ? pid : null;
+    }
+
+    /// <summary>
+    /// Restaura la selección por PID y la posición de scroll tras refrescar un grid.
+    /// </summary>
+    private static void RestaurarSeleccionYScroll(DataGridView grid, int? pidSeleccionado, int primeraFilaVisible)
+    {
+        if (pidSeleccionado.HasValue)
+        {
+            foreach (DataGridViewRow fila in grid.Rows)
+            {
+                if (!CeldaPidCoincide(fila.Cells["PID"], pidSeleccionado.Value))
+                {
+                    continue;
+                }
+
+                fila.Selected = true;
+                grid.CurrentCell = fila.Cells[0];
+                break;
+            }
+        }
+
+        if (primeraFilaVisible >= 0 && primeraFilaVisible < grid.Rows.Count)
+        {
+            try
+            {
+                grid.FirstDisplayedScrollingRowIndex = primeraFilaVisible;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // Ignorado si el índice ya no es válido tras el refresco.
+            }
+        }
+    }
+
+    private static bool CeldaPidCoincide(DataGridViewCell celda, int pid)
+    {
+        if (celda.Value is int pidEntero)
+        {
+            return pidEntero == pid;
+        }
+
+        return int.TryParse(celda.Value?.ToString(), out int pidParseado) && pidParseado == pid;
     }
 
     private void dgvFinalizados_SelectionChanged(object? sender, EventArgs e)
