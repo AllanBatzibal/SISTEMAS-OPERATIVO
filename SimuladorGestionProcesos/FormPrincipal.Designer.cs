@@ -5,6 +5,7 @@ partial class FormPrincipal
     private System.ComponentModel.IContainer components = null;
 
     private Panel panelEncabezado;
+    private Panel panelContenido;
     private Label lblTitulo;
     private Button btnReiniciarSimulacion;
     private TableLayoutPanel layoutSuperior;
@@ -64,6 +65,7 @@ partial class FormPrincipal
     {
         components = new System.ComponentModel.Container();
         panelEncabezado = new Panel();
+        panelContenido = new Panel();
         lblTitulo = new Label();
         btnReiniciarSimulacion = new Button();
         layoutSuperior = new TableLayoutPanel();
@@ -109,6 +111,7 @@ partial class FormPrincipal
         btnVolverAEjecutar = new Button();
         btnExportarCsv = new Button();
         panelEncabezado.SuspendLayout();
+        panelContenido.SuspendLayout();
         layoutSuperior.SuspendLayout();
         grpCrearProceso.SuspendLayout();
         layoutPanelDerecho.SuspendLayout();
@@ -160,6 +163,18 @@ partial class FormPrincipal
         lblTitulo.TabIndex = 0;
         lblTitulo.Text = "SIMULADOR DE GESTIÓN DE PROCESOS EN MEMORIA";
 
+        // panelContenido
+        panelContenido.AutoScroll = true;
+        panelContenido.Controls.Add(grpFinalizados);
+        panelContenido.Controls.Add(grpEspera);
+        panelContenido.Controls.Add(grpEjecucion);
+        panelContenido.Controls.Add(layoutSuperior);
+        panelContenido.Dock = DockStyle.Fill;
+        panelContenido.Location = new Point(0, 64);
+        panelContenido.Name = "panelContenido";
+        panelContenido.Size = new Size(1184, 736);
+        panelContenido.TabIndex = 1;
+
         // layoutSuperior
         layoutSuperior.ColumnCount = 2;
         layoutSuperior.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
@@ -167,13 +182,13 @@ partial class FormPrincipal
         layoutSuperior.Controls.Add(grpCrearProceso, 0, 0);
         layoutSuperior.Controls.Add(layoutPanelDerecho, 1, 0);
         layoutSuperior.Dock = DockStyle.Top;
-        layoutSuperior.Location = new Point(0, 64);
+        layoutSuperior.Location = new Point(0, 0);
         layoutSuperior.Name = "layoutSuperior";
         layoutSuperior.Padding = new Padding(16, 12, 16, 8);
         layoutSuperior.RowCount = 1;
-        layoutSuperior.RowStyles.Add(new RowStyle(SizeType.Absolute, 300F));
-        layoutSuperior.Size = new Size(1184, 312);
-        layoutSuperior.TabIndex = 1;
+        layoutSuperior.RowStyles.Add(new RowStyle(SizeType.Absolute, 340F));
+        layoutSuperior.Size = new Size(1184, 352);
+        layoutSuperior.TabIndex = 0;
 
         // layoutPanelDerecho
         layoutPanelDerecho.ColumnCount = 1;
@@ -184,9 +199,9 @@ partial class FormPrincipal
         layoutPanelDerecho.Location = new Point(597, 15);
         layoutPanelDerecho.Name = "layoutPanelDerecho";
         layoutPanelDerecho.RowCount = 2;
-        layoutPanelDerecho.RowStyles.Add(new RowStyle(SizeType.Percent, 58F));
-        layoutPanelDerecho.RowStyles.Add(new RowStyle(SizeType.Percent, 42F));
-        layoutPanelDerecho.Size = new Size(568, 284);
+        layoutPanelDerecho.RowStyles.Add(new RowStyle(SizeType.Absolute, 195F));
+        layoutPanelDerecho.RowStyles.Add(new RowStyle(SizeType.Absolute, 118F));
+        layoutPanelDerecho.Size = new Size(568, 324);
         layoutPanelDerecho.TabIndex = 2;
 
         // grpCrearProceso
@@ -204,7 +219,7 @@ partial class FormPrincipal
         grpCrearProceso.Location = new Point(19, 15);
         grpCrearProceso.Name = "grpCrearProceso";
         grpCrearProceso.Padding = new Padding(16);
-        grpCrearProceso.Size = new Size(568, 284);
+        grpCrearProceso.Size = new Size(568, 324);
         grpCrearProceso.TabIndex = 0;
         grpCrearProceso.TabStop = false;
         grpCrearProceso.Text = "CREAR PROCESO";
@@ -307,10 +322,10 @@ partial class FormPrincipal
         grpMemoria.Dock = DockStyle.Fill;
         grpMemoria.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpMemoria.ForeColor = Color.FromArgb(44, 62, 80);
-        grpMemoria.Location = new Point(597, 15);
+        grpMemoria.Location = new Point(3, 3);
         grpMemoria.Name = "grpMemoria";
         grpMemoria.Padding = new Padding(16);
-        grpMemoria.Size = new Size(568, 160);
+        grpMemoria.Size = new Size(562, 189);
         grpMemoria.TabIndex = 0;
         grpMemoria.TabStop = false;
         grpMemoria.Text = "ESTADO DE MEMORIA";
@@ -327,10 +342,10 @@ partial class FormPrincipal
         grpMetricas.Dock = DockStyle.Fill;
         grpMetricas.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpMetricas.ForeColor = Color.FromArgb(44, 62, 80);
-        grpMetricas.Location = new Point(3, 155);
+        grpMetricas.Location = new Point(3, 198);
         grpMetricas.Name = "grpMetricas";
         grpMetricas.Padding = new Padding(16);
-        grpMetricas.Size = new Size(562, 106);
+        grpMetricas.Size = new Size(562, 112);
         grpMetricas.TabIndex = 1;
         grpMetricas.TabStop = false;
         grpMetricas.Text = "MÉTRICAS";
@@ -519,11 +534,11 @@ partial class FormPrincipal
         grpEjecucion.Dock = DockStyle.Top;
         grpEjecucion.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpEjecucion.ForeColor = Color.FromArgb(44, 62, 80);
-        grpEjecucion.Location = new Point(0, 376);
+        grpEjecucion.Location = new Point(0, 352);
         grpEjecucion.Name = "grpEjecucion";
         grpEjecucion.Padding = new Padding(16, 20, 16, 16);
         grpEjecucion.Size = new Size(1184, 210);
-        grpEjecucion.TabIndex = 2;
+        grpEjecucion.TabIndex = 1;
         grpEjecucion.TabStop = false;
         grpEjecucion.Text = "PROCESOS EN EJECUCIÓN";
 
@@ -557,11 +572,11 @@ partial class FormPrincipal
         grpEspera.Dock = DockStyle.Top;
         grpEspera.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpEspera.ForeColor = Color.FromArgb(44, 62, 80);
-        grpEspera.Location = new Point(0, 586);
+        grpEspera.Location = new Point(0, 562);
         grpEspera.Name = "grpEspera";
         grpEspera.Padding = new Padding(16, 20, 16, 16);
         grpEspera.Size = new Size(1184, 190);
-        grpEspera.TabIndex = 3;
+        grpEspera.TabIndex = 2;
         grpEspera.TabStop = false;
         grpEspera.Text = "COLA DE ESPERA";
 
@@ -592,14 +607,14 @@ partial class FormPrincipal
         // grpFinalizados
         grpFinalizados.Controls.Add(dgvFinalizados);
         grpFinalizados.Controls.Add(layoutBotonesFinalizados);
-        grpFinalizados.Dock = DockStyle.Fill;
+        grpFinalizados.Dock = DockStyle.Top;
         grpFinalizados.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpFinalizados.ForeColor = Color.FromArgb(44, 62, 80);
-        grpFinalizados.Location = new Point(0, 776);
+        grpFinalizados.Location = new Point(0, 752);
         grpFinalizados.Name = "grpFinalizados";
         grpFinalizados.Padding = new Padding(16, 20, 16, 16);
-        grpFinalizados.Size = new Size(1184, 209);
-        grpFinalizados.TabIndex = 4;
+        grpFinalizados.Size = new Size(1184, 230);
+        grpFinalizados.TabIndex = 3;
         grpFinalizados.TabStop = false;
         grpFinalizados.Text = "PROCESOS FINALIZADOS";
 
@@ -663,16 +678,14 @@ partial class FormPrincipal
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = Color.FromArgb(236, 240, 241);
-        ClientSize = new Size(1184, 955);
-        Controls.Add(grpFinalizados);
-        Controls.Add(grpEspera);
-        Controls.Add(grpEjecucion);
-        Controls.Add(layoutSuperior);
+        ClientSize = new Size(1184, 800);
+        Controls.Add(panelContenido);
         Controls.Add(panelEncabezado);
         Font = new Font("Segoe UI", 9F);
         Name = "FormPrincipal";
         panelEncabezado.ResumeLayout(false);
         panelEncabezado.PerformLayout();
+        panelContenido.ResumeLayout(false);
         layoutSuperior.ResumeLayout(false);
         grpCrearProceso.ResumeLayout(false);
         grpCrearProceso.PerformLayout();

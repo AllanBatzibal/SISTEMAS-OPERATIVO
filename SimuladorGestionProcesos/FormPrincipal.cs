@@ -42,7 +42,7 @@ public partial class FormPrincipal : Form
     {
         Text = "Simulador de Gestión de Procesos en Memoria";
         StartPosition = FormStartPosition.CenterScreen;
-        MinimumSize = new Size(1100, 780);
+        MinimumSize = new Size(1100, 700);
 
         ConfigurarDataGridView(dgvEjecucion);
         ConfigurarDataGridView(dgvEspera);
