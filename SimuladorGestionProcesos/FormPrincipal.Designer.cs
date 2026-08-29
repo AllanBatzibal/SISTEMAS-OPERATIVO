@@ -44,7 +44,9 @@ partial class FormPrincipal
     private Button btnCancelarEspera;
     private GroupBox grpFinalizados;
     private DataGridView dgvFinalizados;
+    private TableLayoutPanel layoutBotonesFinalizados;
     private Button btnVolverAEjecutar;
+    private Button btnExportarCsv;
 
     protected override void Dispose(bool disposing)
     {
@@ -99,7 +101,9 @@ partial class FormPrincipal
         btnCancelarEspera = new Button();
         grpFinalizados = new GroupBox();
         dgvFinalizados = new DataGridView();
+        layoutBotonesFinalizados = new TableLayoutPanel();
         btnVolverAEjecutar = new Button();
+        btnExportarCsv = new Button();
         panelEncabezado.SuspendLayout();
         layoutSuperior.SuspendLayout();
         grpCrearProceso.SuspendLayout();
@@ -111,6 +115,7 @@ partial class FormPrincipal
         grpEspera.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvEspera).BeginInit();
         grpFinalizados.SuspendLayout();
+        layoutBotonesFinalizados.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvFinalizados).BeginInit();
         SuspendLayout();
 
@@ -559,47 +564,79 @@ partial class FormPrincipal
 
         // grpFinalizados
         grpFinalizados.Controls.Add(dgvFinalizados);
-        grpFinalizados.Controls.Add(btnVolverAEjecutar);
+        grpFinalizados.Controls.Add(layoutBotonesFinalizados);
         grpFinalizados.Dock = DockStyle.Fill;
         grpFinalizados.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpFinalizados.ForeColor = Color.FromArgb(44, 62, 80);
         grpFinalizados.Location = new Point(0, 756);
         grpFinalizados.Name = "grpFinalizados";
         grpFinalizados.Padding = new Padding(16, 20, 16, 16);
-        grpFinalizados.Size = new Size(1184, 175);
+        grpFinalizados.Size = new Size(1184, 209);
         grpFinalizados.TabIndex = 4;
         grpFinalizados.TabStop = false;
         grpFinalizados.Text = "PROCESOS FINALIZADOS";
 
+        // layoutBotonesFinalizados
+        layoutBotonesFinalizados.ColumnCount = 2;
+        layoutBotonesFinalizados.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+        layoutBotonesFinalizados.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+        layoutBotonesFinalizados.Controls.Add(btnVolverAEjecutar, 0, 0);
+        layoutBotonesFinalizados.Controls.Add(btnExportarCsv, 1, 0);
+        layoutBotonesFinalizados.Dock = DockStyle.Bottom;
+        layoutBotonesFinalizados.Location = new Point(16, 159);
+        layoutBotonesFinalizados.Name = "layoutBotonesFinalizados";
+        layoutBotonesFinalizados.RowCount = 1;
+        layoutBotonesFinalizados.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+        layoutBotonesFinalizados.Size = new Size(1152, 34);
+        layoutBotonesFinalizados.TabIndex = 2;
+
         // btnVolverAEjecutar
         btnVolverAEjecutar.BackColor = Color.FromArgb(39, 174, 96);
         btnVolverAEjecutar.Cursor = Cursors.Hand;
-        btnVolverAEjecutar.Dock = DockStyle.Bottom;
+        btnVolverAEjecutar.Dock = DockStyle.Fill;
         btnVolverAEjecutar.Enabled = false;
         btnVolverAEjecutar.FlatAppearance.BorderSize = 0;
         btnVolverAEjecutar.FlatStyle = FlatStyle.Flat;
         btnVolverAEjecutar.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
         btnVolverAEjecutar.ForeColor = Color.White;
-        btnVolverAEjecutar.Location = new Point(16, 129);
+        btnVolverAEjecutar.Location = new Point(0, 0);
+        btnVolverAEjecutar.Margin = new Padding(0, 0, 4, 0);
         btnVolverAEjecutar.Name = "btnVolverAEjecutar";
-        btnVolverAEjecutar.Size = new Size(1152, 30);
-        btnVolverAEjecutar.TabIndex = 1;
+        btnVolverAEjecutar.Size = new Size(572, 34);
+        btnVolverAEjecutar.TabIndex = 0;
         btnVolverAEjecutar.Text = "VOLVER A EJECUTAR";
         btnVolverAEjecutar.UseVisualStyleBackColor = false;
         btnVolverAEjecutar.Click += btnVolverAEjecutar_Click;
+
+        // btnExportarCsv
+        btnExportarCsv.BackColor = Color.FromArgb(52, 73, 94);
+        btnExportarCsv.Cursor = Cursors.Hand;
+        btnExportarCsv.Dock = DockStyle.Fill;
+        btnExportarCsv.FlatAppearance.BorderSize = 0;
+        btnExportarCsv.FlatStyle = FlatStyle.Flat;
+        btnExportarCsv.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+        btnExportarCsv.ForeColor = Color.White;
+        btnExportarCsv.Location = new Point(576, 0);
+        btnExportarCsv.Margin = new Padding(4, 0, 0, 0);
+        btnExportarCsv.Name = "btnExportarCsv";
+        btnExportarCsv.Size = new Size(576, 34);
+        btnExportarCsv.TabIndex = 1;
+        btnExportarCsv.Text = "EXPORTAR CSV";
+        btnExportarCsv.UseVisualStyleBackColor = false;
+        btnExportarCsv.Click += btnExportarCsv_Click;
 
         // dgvFinalizados
         dgvFinalizados.Dock = DockStyle.Fill;
         dgvFinalizados.Location = new Point(16, 38);
         dgvFinalizados.Name = "dgvFinalizados";
-        dgvFinalizados.Size = new Size(1152, 91);
+        dgvFinalizados.Size = new Size(1152, 121);
         dgvFinalizados.TabIndex = 0;
 
         // FormPrincipal
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = Color.FromArgb(236, 240, 241);
-        ClientSize = new Size(1184, 901);
+        ClientSize = new Size(1184, 935);
         Controls.Add(grpFinalizados);
         Controls.Add(grpEspera);
         Controls.Add(grpEjecucion);
@@ -622,6 +659,7 @@ partial class FormPrincipal
         grpEspera.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)dgvEspera).EndInit();
         grpFinalizados.ResumeLayout(false);
+        layoutBotonesFinalizados.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)dgvFinalizados).EndInit();
         ResumeLayout(false);
     }

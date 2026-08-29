@@ -1,5 +1,6 @@
 using SimuladorGestionProcesos.Models;
 using SimuladorGestionProcesos.Services;
+using SimuladorGestionProcesos.Utils;
 
 namespace SimuladorGestionProcesos;
 
@@ -410,6 +411,51 @@ public partial class FormPrincipal : Form
         finally
         {
             ActualizarEstadoBotonReejecutar();
+        }
+    }
+
+    private void btnExportarCsv_Click(object sender, EventArgs e)
+    {
+        if (_gestor.ProcesosFinalizados.Count == 0)
+        {
+            MessageBox.Show(
+                "No hay procesos finalizados para exportar.",
+                "Exportar CSV",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+            return;
+        }
+
+        using var dialogoGuardado = new SaveFileDialog
+        {
+            Filter = "Archivos CSV|*.csv",
+            FileName = $"procesos_finalizados_{DateTime.Now:yyyyMMdd_HHmmss}.csv",
+            Title = "Exportar procesos finalizados"
+        };
+
+        if (dialogoGuardado.ShowDialog() != DialogResult.OK)
+        {
+            return;
+        }
+
+        try
+        {
+            var procesos = _gestor.ProcesosFinalizados.ToList();
+            ExportadorCsv.ExportarProcesosFinalizados(procesos, dialogoGuardado.FileName);
+
+            MessageBox.Show(
+                $"Archivo exportado correctamente:{Environment.NewLine}{dialogoGuardado.FileName}",
+                "Exportar CSV",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"No se pudo exportar el archivo CSV:{Environment.NewLine}{ex.Message}",
+                "Exportar CSV",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
         }
     }
 
