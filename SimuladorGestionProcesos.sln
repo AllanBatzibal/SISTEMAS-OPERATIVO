@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimuladorGestionProcesos", "SimuladorGestionProcesos\SimuladorGestionProcesos.csproj", "{37242409-9C74-429A-B072-218D9AA92F71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimuladorGestionProcesos.Tests", "SimuladorGestionProcesos.Tests\SimuladorGestionProcesos.Tests.csproj", "{32B2AD9E-D605-4B43-AA04-4071DEA8A801}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{37242409-9C74-429A-B072-218D9AA92F71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37242409-9C74-429A-B072-218D9AA92F71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37242409-9C74-429A-B072-218D9AA92F71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32B2AD9E-D605-4B43-AA04-4071DEA8A801}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32B2AD9E-D605-4B43-AA04-4071DEA8A801}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32B2AD9E-D605-4B43-AA04-4071DEA8A801}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32B2AD9E-D605-4B43-AA04-4071DEA8A801}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

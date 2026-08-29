@@ -33,6 +33,7 @@ Comprender de forma práctica conceptos fundamentales de sistemas operativos:
 C#
 .NET 8
 Windows Forms
+xUnit
 Visual Studio 2022
 Git
 GitHub
@@ -47,6 +48,7 @@ Models/     → Clase Proceso y estructura de datos del simulador
 Services/   → GestorProcesos (lógica de memoria, cola y ejecución)
 Utils/      → GeneradorPID (identificadores únicos)
 Forms/      → FormPrincipal (interfaz gráfica)
+Tests/      → Pruebas unitarias xUnit de la lógica del gestor
 ```
 
 La interfaz no contiene la lógica del simulador; delega las operaciones al servicio `GestorProcesos`.
@@ -71,6 +73,23 @@ También puede compilarse desde terminal:
 ```bash
 dotnet build SimuladorGestionProcesos.sln
 dotnet run --project SimuladorGestionProcesos/SimuladorGestionProcesos.csproj
+dotnet test SimuladorGestionProcesos.sln
+```
+
+## Pruebas unitarias
+
+El proyecto `SimuladorGestionProcesos.Tests` contiene pruebas xUnit para la lógica de `GestorProcesos` (memoria, cola de espera, validaciones y admisión de procesos).
+
+Para ejecutarlas:
+
+```bash
+dotnet test SimuladorGestionProcesos.sln
+```
+
+Para ver detalle de cada prueba:
+
+```bash
+dotnet test SimuladorGestionProcesos.sln --verbosity normal
 ```
 
 ## Uso
