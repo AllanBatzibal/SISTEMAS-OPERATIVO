@@ -185,6 +185,39 @@ public class GestorProcesos
         }
     }
 
+    /// <summary>
+    /// Cancela manualmente un proceso en ejecución o en la cola de espera.
+    /// </summary>
+    public bool CancelarProceso(Proceso proceso)
+    {
+        bool cancelado;
+
+        lock (_bloqueo)
+        {
+            if (ProcesosEjecucion.Contains(proceso))
+            {
+                CancelarProcesoEnEjecucionInterno(proceso);
+                cancelado = true;
+            }
+            else if (ColaEspera.Contains(proceso))
+            {
+                CancelarProcesoEnColaInterno(proceso);
+                cancelado = true;
+            }
+            else
+            {
+                cancelado = false;
+            }
+        }
+
+        if (cancelado)
+        {
+            NotificarActualizacion();
+        }
+
+        return cancelado;
+    }
+
     private static string? ValidarDatos(int memoria, int duracion)
     {
         if (memoria <= 0)
@@ -207,7 +240,7 @@ public class GestorProcesos
 
     private void IniciarProcesoInterno(Proceso proceso)
     {
-        if (proceso.EnEjecucionActiva || proceso.Estado == "Ejecutando" || proceso.Estado == "Finalizado")
+        if (proceso.EnEjecucionActiva || proceso.Estado == "Ejecutando" || proceso.Estado == "Finalizado" || proceso.Estado == "Cancelado")
         {
             return;
         }
@@ -271,6 +304,43 @@ public class GestorProcesos
             ColaEspera.Dequeue();
             IniciarProcesoInterno(siguiente);
         }
+    }
+
+    /// <summary>
+    /// Cancela un proceso en ejecución, libera su memoria y revisa la cola de espera.
+    /// La tarea async en curso detectará el cambio de estado y saldrá sin liberar de nuevo.
+    /// </summary>
+    private void CancelarProcesoEnEjecucionInterno(Proceso proceso)
+    {
+        if (proceso.Estado != "Ejecutando")
+        {
+            return;
+        }
+
+        proceso.Estado = "Cancelado";
+        LiberarMemoriaInterna(proceso);
+        ProcesosEjecucion.Remove(proceso);
+        RevisarColaEsperaInterna();
+    }
+
+    /// <summary>
+    /// Elimina un proceso de la cola FIFO reconstruyéndola sin ese elemento.
+    /// </summary>
+    private void CancelarProcesoEnColaInterno(Proceso proceso)
+    {
+        var procesosRestantes = ColaEspera.Where(p => p.PID != proceso.PID).ToList();
+
+        while (ColaEspera.Count > 0)
+        {
+            ColaEspera.Dequeue();
+        }
+
+        foreach (var procesoRestante in procesosRestantes)
+        {
+            ColaEspera.Enqueue(procesoRestante);
+        }
+
+        proceso.Estado = "Cancelado";
     }
 
     private int ObtenerMemoriaDisponibleInterna()

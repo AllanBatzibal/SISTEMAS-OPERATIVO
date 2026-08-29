@@ -1,3 +1,4 @@
+using SimuladorGestionProcesos.Models;
 using SimuladorGestionProcesos.Services;
 
 namespace SimuladorGestionProcesos;
@@ -51,6 +52,10 @@ public partial class FormPrincipal : Form
 
         txtMemoria.KeyPress += SoloNumeros_KeyPress;
         txtDuracion.KeyPress += SoloNumeros_KeyPress;
+
+        dgvFinalizados.SelectionChanged += dgvFinalizados_SelectionChanged;
+        dgvEjecucion.SelectionChanged += dgvEjecucion_SelectionChanged;
+        dgvEspera.SelectionChanged += dgvEspera_SelectionChanged;
     }
 
     private static void ConfigurarDataGridView(DataGridView grid)
@@ -198,14 +203,18 @@ public partial class FormPrincipal : Form
 
         foreach (var proceso in _gestor.ProcesosEjecucion)
         {
-            dgvEjecucion.Rows.Add(
+            int indice = dgvEjecucion.Rows.Add(
                 proceso.PID,
                 proceso.Nombre,
                 $"{proceso.MemoriaRequerida} MB",
                 $"{proceso.Duracion} s",
                 $"{proceso.TiempoRestante} s",
                 proceso.Estado);
+
+            dgvEjecucion.Rows[indice].Tag = proceso;
         }
+
+        ActualizarEstadoBotonCancelarEjecucion();
     }
 
     private void ActualizarGridEspera()
@@ -214,13 +223,17 @@ public partial class FormPrincipal : Form
 
         foreach (var proceso in _gestor.ColaEspera)
         {
-            dgvEspera.Rows.Add(
+            int indice = dgvEspera.Rows.Add(
                 proceso.PID,
                 proceso.Nombre,
                 $"{proceso.MemoriaRequerida} MB",
                 $"{proceso.Duracion} s",
                 proceso.Estado);
+
+            dgvEspera.Rows[indice].Tag = proceso;
         }
+
+        ActualizarEstadoBotonCancelarEspera();
     }
 
     private void ActualizarGridFinalizados()
@@ -229,11 +242,132 @@ public partial class FormPrincipal : Form
 
         foreach (var proceso in _gestor.ProcesosFinalizados)
         {
-            dgvFinalizados.Rows.Add(
+            int indice = dgvFinalizados.Rows.Add(
                 proceso.PID,
                 proceso.Nombre,
                 $"{proceso.MemoriaRequerida} MB",
                 proceso.Estado);
+
+            // Guarda la referencia al proceso finalizado para poder re-ejecutarlo.
+            dgvFinalizados.Rows[indice].Tag = proceso;
+        }
+
+        ActualizarEstadoBotonReejecutar();
+    }
+
+    private void dgvFinalizados_SelectionChanged(object? sender, EventArgs e)
+    {
+        ActualizarEstadoBotonReejecutar();
+    }
+
+    private void dgvEjecucion_SelectionChanged(object? sender, EventArgs e)
+    {
+        ActualizarEstadoBotonCancelarEjecucion();
+    }
+
+    private void dgvEspera_SelectionChanged(object? sender, EventArgs e)
+    {
+        ActualizarEstadoBotonCancelarEspera();
+    }
+
+    /// <summary>
+    /// Habilita el botón de cancelación solo cuando hay un proceso en ejecución seleccionado.
+    /// </summary>
+    private void ActualizarEstadoBotonCancelarEjecucion()
+    {
+        btnCancelarEjecucion.Enabled = dgvEjecucion.SelectedRows.Count > 0
+            && dgvEjecucion.SelectedRows[0].Tag is Proceso;
+    }
+
+    /// <summary>
+    /// Habilita el botón de cancelación solo cuando hay un proceso en cola seleccionado.
+    /// </summary>
+    private void ActualizarEstadoBotonCancelarEspera()
+    {
+        btnCancelarEspera.Enabled = dgvEspera.SelectedRows.Count > 0
+            && dgvEspera.SelectedRows[0].Tag is Proceso;
+    }
+
+    /// <summary>
+    /// Habilita el botón de re-ejecución solo cuando hay un proceso finalizado seleccionado.
+    /// </summary>
+    private void ActualizarEstadoBotonReejecutar()
+    {
+        btnVolverAEjecutar.Enabled = dgvFinalizados.SelectedRows.Count > 0
+            && dgvFinalizados.SelectedRows[0].Tag is Proceso;
+    }
+
+    private async void btnVolverAEjecutar_Click(object sender, EventArgs e)
+    {
+        if (dgvFinalizados.SelectedRows.Count == 0
+            || dgvFinalizados.SelectedRows[0].Tag is not Proceso procesoOriginal)
+        {
+            return;
+        }
+
+        btnVolverAEjecutar.Enabled = false;
+
+        try
+        {
+            // Crea una instancia nueva con los mismos datos; el PID y la admisión
+            // se resuelven en AgregarProceso, igual que al agregar un proceso manual.
+            var resultado = await Task.Run(() => _gestor.AgregarProceso(
+                procesoOriginal.Nombre,
+                procesoOriginal.MemoriaRequerida,
+                procesoOriginal.Duracion));
+
+            if (!resultado.Exito)
+            {
+                MessageBox.Show(
+                    resultado.Error ?? "No se pudo volver a ejecutar el proceso.",
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+        }
+        finally
+        {
+            ActualizarEstadoBotonReejecutar();
+        }
+    }
+
+    private async void btnCancelarEjecucion_Click(object sender, EventArgs e)
+    {
+        if (dgvEjecucion.SelectedRows.Count == 0
+            || dgvEjecucion.SelectedRows[0].Tag is not Proceso proceso)
+        {
+            return;
+        }
+
+        btnCancelarEjecucion.Enabled = false;
+
+        try
+        {
+            await Task.Run(() => _gestor.CancelarProceso(proceso));
+        }
+        finally
+        {
+            ActualizarEstadoBotonCancelarEjecucion();
+        }
+    }
+
+    private async void btnCancelarEspera_Click(object sender, EventArgs e)
+    {
+        if (dgvEspera.SelectedRows.Count == 0
+            || dgvEspera.SelectedRows[0].Tag is not Proceso proceso)
+        {
+            return;
+        }
+
+        btnCancelarEspera.Enabled = false;
+
+        try
+        {
+            await Task.Run(() => _gestor.CancelarProceso(proceso));
+        }
+        finally
+        {
+            ActualizarEstadoBotonCancelarEspera();
         }
     }
 

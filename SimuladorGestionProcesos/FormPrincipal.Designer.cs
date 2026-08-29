@@ -26,10 +26,13 @@ partial class FormPrincipal
     private Label lblPorcentajeMemoria;
     private GroupBox grpEjecucion;
     private DataGridView dgvEjecucion;
+    private Button btnCancelarEjecucion;
     private GroupBox grpEspera;
     private DataGridView dgvEspera;
+    private Button btnCancelarEspera;
     private GroupBox grpFinalizados;
     private DataGridView dgvFinalizados;
+    private Button btnVolverAEjecutar;
 
     protected override void Dispose(bool disposing)
     {
@@ -66,10 +69,13 @@ partial class FormPrincipal
         lblPorcentajeMemoria = new Label();
         grpEjecucion = new GroupBox();
         dgvEjecucion = new DataGridView();
+        btnCancelarEjecucion = new Button();
         grpEspera = new GroupBox();
         dgvEspera = new DataGridView();
+        btnCancelarEspera = new Button();
         grpFinalizados = new GroupBox();
         dgvFinalizados = new DataGridView();
+        btnVolverAEjecutar = new Button();
         panelEncabezado.SuspendLayout();
         layoutSuperior.SuspendLayout();
         grpCrearProceso.SuspendLayout();
@@ -304,16 +310,34 @@ partial class FormPrincipal
 
         // grpEjecucion
         grpEjecucion.Controls.Add(dgvEjecucion);
+        grpEjecucion.Controls.Add(btnCancelarEjecucion);
         grpEjecucion.Dock = DockStyle.Top;
         grpEjecucion.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpEjecucion.ForeColor = Color.FromArgb(44, 62, 80);
         grpEjecucion.Location = new Point(0, 296);
         grpEjecucion.Name = "grpEjecucion";
         grpEjecucion.Padding = new Padding(16, 20, 16, 16);
-        grpEjecucion.Size = new Size(1184, 180);
+        grpEjecucion.Size = new Size(1184, 210);
         grpEjecucion.TabIndex = 2;
         grpEjecucion.TabStop = false;
         grpEjecucion.Text = "PROCESOS EN EJECUCIÓN";
+
+        // btnCancelarEjecucion
+        btnCancelarEjecucion.BackColor = Color.FromArgb(231, 76, 60);
+        btnCancelarEjecucion.Cursor = Cursors.Hand;
+        btnCancelarEjecucion.Dock = DockStyle.Bottom;
+        btnCancelarEjecucion.Enabled = false;
+        btnCancelarEjecucion.FlatAppearance.BorderSize = 0;
+        btnCancelarEjecucion.FlatStyle = FlatStyle.Flat;
+        btnCancelarEjecucion.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+        btnCancelarEjecucion.ForeColor = Color.White;
+        btnCancelarEjecucion.Location = new Point(16, 164);
+        btnCancelarEjecucion.Name = "btnCancelarEjecucion";
+        btnCancelarEjecucion.Size = new Size(1152, 30);
+        btnCancelarEjecucion.TabIndex = 1;
+        btnCancelarEjecucion.Text = "CANCELAR";
+        btnCancelarEjecucion.UseVisualStyleBackColor = false;
+        btnCancelarEjecucion.Click += btnCancelarEjecucion_Click;
 
         // dgvEjecucion
         dgvEjecucion.Dock = DockStyle.Fill;
@@ -324,16 +348,34 @@ partial class FormPrincipal
 
         // grpEspera
         grpEspera.Controls.Add(dgvEspera);
+        grpEspera.Controls.Add(btnCancelarEspera);
         grpEspera.Dock = DockStyle.Top;
         grpEspera.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpEspera.ForeColor = Color.FromArgb(44, 62, 80);
-        grpEspera.Location = new Point(0, 476);
+        grpEspera.Location = new Point(0, 506);
         grpEspera.Name = "grpEspera";
         grpEspera.Padding = new Padding(16, 20, 16, 16);
-        grpEspera.Size = new Size(1184, 160);
+        grpEspera.Size = new Size(1184, 190);
         grpEspera.TabIndex = 3;
         grpEspera.TabStop = false;
         grpEspera.Text = "COLA DE ESPERA";
+
+        // btnCancelarEspera
+        btnCancelarEspera.BackColor = Color.FromArgb(231, 76, 60);
+        btnCancelarEspera.Cursor = Cursors.Hand;
+        btnCancelarEspera.Dock = DockStyle.Bottom;
+        btnCancelarEspera.Enabled = false;
+        btnCancelarEspera.FlatAppearance.BorderSize = 0;
+        btnCancelarEspera.FlatStyle = FlatStyle.Flat;
+        btnCancelarEspera.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+        btnCancelarEspera.ForeColor = Color.White;
+        btnCancelarEspera.Location = new Point(16, 144);
+        btnCancelarEspera.Name = "btnCancelarEspera";
+        btnCancelarEspera.Size = new Size(1152, 30);
+        btnCancelarEspera.TabIndex = 1;
+        btnCancelarEspera.Text = "CANCELAR";
+        btnCancelarEspera.UseVisualStyleBackColor = false;
+        btnCancelarEspera.Click += btnCancelarEspera_Click;
 
         // dgvEspera
         dgvEspera.Dock = DockStyle.Fill;
@@ -344,16 +386,34 @@ partial class FormPrincipal
 
         // grpFinalizados
         grpFinalizados.Controls.Add(dgvFinalizados);
+        grpFinalizados.Controls.Add(btnVolverAEjecutar);
         grpFinalizados.Dock = DockStyle.Fill;
         grpFinalizados.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpFinalizados.ForeColor = Color.FromArgb(44, 62, 80);
-        grpFinalizados.Location = new Point(0, 636);
+        grpFinalizados.Location = new Point(0, 696);
         grpFinalizados.Name = "grpFinalizados";
         grpFinalizados.Padding = new Padding(16, 20, 16, 16);
-        grpFinalizados.Size = new Size(1184, 145);
+        grpFinalizados.Size = new Size(1184, 175);
         grpFinalizados.TabIndex = 4;
         grpFinalizados.TabStop = false;
         grpFinalizados.Text = "PROCESOS FINALIZADOS";
+
+        // btnVolverAEjecutar
+        btnVolverAEjecutar.BackColor = Color.FromArgb(39, 174, 96);
+        btnVolverAEjecutar.Cursor = Cursors.Hand;
+        btnVolverAEjecutar.Dock = DockStyle.Bottom;
+        btnVolverAEjecutar.Enabled = false;
+        btnVolverAEjecutar.FlatAppearance.BorderSize = 0;
+        btnVolverAEjecutar.FlatStyle = FlatStyle.Flat;
+        btnVolverAEjecutar.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+        btnVolverAEjecutar.ForeColor = Color.White;
+        btnVolverAEjecutar.Location = new Point(16, 129);
+        btnVolverAEjecutar.Name = "btnVolverAEjecutar";
+        btnVolverAEjecutar.Size = new Size(1152, 30);
+        btnVolverAEjecutar.TabIndex = 1;
+        btnVolverAEjecutar.Text = "VOLVER A EJECUTAR";
+        btnVolverAEjecutar.UseVisualStyleBackColor = false;
+        btnVolverAEjecutar.Click += btnVolverAEjecutar_Click;
 
         // dgvFinalizados
         dgvFinalizados.Dock = DockStyle.Fill;
