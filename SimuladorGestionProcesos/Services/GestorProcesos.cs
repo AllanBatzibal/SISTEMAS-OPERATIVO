@@ -12,6 +12,8 @@ public class GestorProcesos
     public const int MEMORIA_TOTAL = 1024;
 
     private int _memoriaUtilizada;
+    private int _totalProcesosCreados;
+    private int _picoMemoriaUsadaMb;
     private readonly object _bloqueo = new();
     private readonly GeneradorPID _generadorPid = new();
 
@@ -37,6 +39,57 @@ public class GestorProcesos
 
     public int MemoriaDisponible => MEMORIA_TOTAL - MemoriaUtilizada;
 
+    /// <summary>Total de procesos creados desde el inicio o último reinicio.</summary>
+    public int TotalProcesosCreados
+    {
+        get
+        {
+            lock (_bloqueo)
+            {
+                return _totalProcesosCreados;
+            }
+        }
+    }
+
+    /// <summary>Cantidad de procesos que han finalizado correctamente.</summary>
+    public int TotalProcesosFinalizados
+    {
+        get
+        {
+            lock (_bloqueo)
+            {
+                return ProcesosFinalizados.Count;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Promedio de segundos entre la creación y el inicio de ejecución
+    /// para los procesos que ya comenzaron a ejecutarse.
+    /// </summary>
+    public double TiempoEsperaPromedioSegundos
+    {
+        get
+        {
+            lock (_bloqueo)
+            {
+                return CalcularTiempoEsperaPromedioInterno();
+            }
+        }
+    }
+
+    /// <summary>Máximo histórico de memoria RAM utilizada en MB.</summary>
+    public int PicoMemoriaUsadaMb
+    {
+        get
+        {
+            lock (_bloqueo)
+            {
+                return _picoMemoriaUsadaMb;
+            }
+        }
+    }
+
     /// <summary>
     /// Crea un proceso, valida los datos y lo envía a ejecución o a la cola FIFO.
     /// </summary>
@@ -60,11 +113,14 @@ public class GestorProcesos
             MemoriaRequerida = memoria,
             Duracion = duracion,
             TiempoRestante = duracion,
-            Estado = "Nuevo"
+            Estado = "Nuevo",
+            HoraCreacion = DateTime.Now
         };
 
         lock (_bloqueo)
         {
+            _totalProcesosCreados++;
+
             // Verifica si existe memoria RAM suficiente para iniciar la ejecución del proceso.
             if (ObtenerMemoriaDisponibleInterna() >= proceso.MemoriaRequerida)
             {
@@ -242,6 +298,8 @@ public class GestorProcesos
 
             ProcesosFinalizados.Clear();
             _memoriaUtilizada = 0;
+            _totalProcesosCreados = 0;
+            _picoMemoriaUsadaMb = 0;
             _generadorPid.Reiniciar();
         }
 
@@ -281,7 +339,9 @@ public class GestorProcesos
         }
 
         _memoriaUtilizada += proceso.MemoriaRequerida;
+        ActualizarPicoMemoriaInterna();
         proceso.Estado = "Ejecutando";
+        proceso.HoraInicioEjecucion = DateTime.Now;
         proceso.TiempoRestante = proceso.Duracion;
         proceso.EnEjecucionActiva = true;
         ProcesosEjecucion.Add(proceso);
@@ -297,6 +357,7 @@ public class GestorProcesos
         }
 
         proceso.Estado = "Finalizado";
+        proceso.HoraFinalizacion = DateTime.Now;
         proceso.TiempoRestante = 0;
         ProcesosEjecucion.Remove(proceso);
         ProcesosFinalizados.Add(proceso);
@@ -318,6 +379,30 @@ public class GestorProcesos
         {
             _memoriaUtilizada = 0;
         }
+    }
+
+    private void ActualizarPicoMemoriaInterna()
+    {
+        if (_memoriaUtilizada > _picoMemoriaUsadaMb)
+        {
+            _picoMemoriaUsadaMb = _memoriaUtilizada;
+        }
+    }
+
+    private double CalcularTiempoEsperaPromedioInterno()
+    {
+        var procesosConInicio = ProcesosEjecucion
+            .Concat(ProcesosFinalizados)
+            .Where(p => p.HoraCreacion.HasValue && p.HoraInicioEjecucion.HasValue)
+            .ToList();
+
+        if (procesosConInicio.Count == 0)
+        {
+            return 0;
+        }
+
+        return procesosConInicio.Average(proceso =>
+            (proceso.HoraInicioEjecucion!.Value - proceso.HoraCreacion!.Value).TotalSeconds);
     }
 
     private void RevisarColaEsperaInterna()

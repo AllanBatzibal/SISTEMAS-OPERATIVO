@@ -28,4 +28,13 @@ public class Proceso
     /// para evitar iniciarlo dos veces.
     /// </summary>
     public bool EnEjecucionActiva { get; set; }
+
+    /// <summary>Momento en que el proceso fue creado en el simulador.</summary>
+    public DateTime? HoraCreacion { get; set; }
+
+    /// <summary>Momento en que el proceso comenzó a ejecutarse.</summary>
+    public DateTime? HoraInicioEjecucion { get; set; }
+
+    /// <summary>Momento en que el proceso finalizó su ejecución.</summary>
+    public DateTime? HoraFinalizacion { get; set; }
 }

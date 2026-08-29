@@ -269,6 +269,11 @@ public partial class FormPrincipal : Form
         progressBarMemoria.Value = Math.Clamp(_gestor.MemoriaUtilizada, 0, GestorProcesos.MEMORIA_TOTAL);
         lblPorcentajeMemoria.Text = $"{porcentaje}%";
 
+        lblTotalCreadosValor.Text = _gestor.TotalProcesosCreados.ToString();
+        lblTotalFinalizadosValor.Text = _gestor.TotalProcesosFinalizados.ToString();
+        lblEsperaPromedioValor.Text = $"{_gestor.TiempoEsperaPromedioSegundos:F1}";
+        lblPicoMemoriaValor.Text = $"{_gestor.PicoMemoriaUsadaMb} MB";
+
         ActualizarGridEjecucion();
         ActualizarGridEspera();
         ActualizarGridFinalizados();

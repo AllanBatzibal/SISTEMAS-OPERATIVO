@@ -26,6 +26,16 @@ partial class FormPrincipal
     private Label lblRamDisponibleValor;
     private ProgressBar progressBarMemoria;
     private Label lblPorcentajeMemoria;
+    private TableLayoutPanel layoutPanelDerecho;
+    private GroupBox grpMetricas;
+    private Label lblTotalCreados;
+    private Label lblTotalCreadosValor;
+    private Label lblTotalFinalizados;
+    private Label lblTotalFinalizadosValor;
+    private Label lblEsperaPromedio;
+    private Label lblEsperaPromedioValor;
+    private Label lblPicoMemoria;
+    private Label lblPicoMemoriaValor;
     private GroupBox grpEjecucion;
     private DataGridView dgvEjecucion;
     private Button btnCancelarEjecucion;
@@ -71,6 +81,16 @@ partial class FormPrincipal
         lblRamDisponibleValor = new Label();
         progressBarMemoria = new ProgressBar();
         lblPorcentajeMemoria = new Label();
+        layoutPanelDerecho = new TableLayoutPanel();
+        grpMetricas = new GroupBox();
+        lblTotalCreados = new Label();
+        lblTotalCreadosValor = new Label();
+        lblTotalFinalizados = new Label();
+        lblTotalFinalizadosValor = new Label();
+        lblEsperaPromedio = new Label();
+        lblEsperaPromedioValor = new Label();
+        lblPicoMemoria = new Label();
+        lblPicoMemoriaValor = new Label();
         grpEjecucion = new GroupBox();
         dgvEjecucion = new DataGridView();
         btnCancelarEjecucion = new Button();
@@ -83,7 +103,9 @@ partial class FormPrincipal
         panelEncabezado.SuspendLayout();
         layoutSuperior.SuspendLayout();
         grpCrearProceso.SuspendLayout();
+        layoutPanelDerecho.SuspendLayout();
         grpMemoria.SuspendLayout();
+        grpMetricas.SuspendLayout();
         grpEjecucion.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvEjecucion).BeginInit();
         grpEspera.SuspendLayout();
@@ -134,15 +156,29 @@ partial class FormPrincipal
         layoutSuperior.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         layoutSuperior.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
         layoutSuperior.Controls.Add(grpCrearProceso, 0, 0);
-        layoutSuperior.Controls.Add(grpMemoria, 1, 0);
+        layoutSuperior.Controls.Add(layoutPanelDerecho, 1, 0);
         layoutSuperior.Dock = DockStyle.Top;
         layoutSuperior.Location = new Point(0, 64);
         layoutSuperior.Name = "layoutSuperior";
         layoutSuperior.Padding = new Padding(16, 12, 16, 8);
         layoutSuperior.RowCount = 1;
-        layoutSuperior.RowStyles.Add(new RowStyle(SizeType.Absolute, 220F));
-        layoutSuperior.Size = new Size(1184, 232);
+        layoutSuperior.RowStyles.Add(new RowStyle(SizeType.Absolute, 280F));
+        layoutSuperior.Size = new Size(1184, 292);
         layoutSuperior.TabIndex = 1;
+
+        // layoutPanelDerecho
+        layoutPanelDerecho.ColumnCount = 1;
+        layoutPanelDerecho.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        layoutPanelDerecho.Controls.Add(grpMemoria, 0, 0);
+        layoutPanelDerecho.Controls.Add(grpMetricas, 0, 1);
+        layoutPanelDerecho.Dock = DockStyle.Fill;
+        layoutPanelDerecho.Location = new Point(597, 15);
+        layoutPanelDerecho.Name = "layoutPanelDerecho";
+        layoutPanelDerecho.RowCount = 2;
+        layoutPanelDerecho.RowStyles.Add(new RowStyle(SizeType.Percent, 58F));
+        layoutPanelDerecho.RowStyles.Add(new RowStyle(SizeType.Percent, 42F));
+        layoutPanelDerecho.Size = new Size(568, 264);
+        layoutPanelDerecho.TabIndex = 2;
 
         // grpCrearProceso
         grpCrearProceso.Controls.Add(lblNombre);
@@ -159,7 +195,7 @@ partial class FormPrincipal
         grpCrearProceso.Location = new Point(19, 15);
         grpCrearProceso.Name = "grpCrearProceso";
         grpCrearProceso.Padding = new Padding(16);
-        grpCrearProceso.Size = new Size(568, 204);
+        grpCrearProceso.Size = new Size(568, 264);
         grpCrearProceso.TabIndex = 0;
         grpCrearProceso.TabStop = false;
         grpCrearProceso.Text = "CREAR PROCESO";
@@ -263,10 +299,110 @@ partial class FormPrincipal
         grpMemoria.Location = new Point(597, 15);
         grpMemoria.Name = "grpMemoria";
         grpMemoria.Padding = new Padding(16);
-        grpMemoria.Size = new Size(568, 204);
-        grpMemoria.TabIndex = 1;
+        grpMemoria.Size = new Size(568, 146);
+        grpMemoria.TabIndex = 0;
         grpMemoria.TabStop = false;
         grpMemoria.Text = "ESTADO DE MEMORIA";
+
+        // grpMetricas
+        grpMetricas.Controls.Add(lblTotalCreados);
+        grpMetricas.Controls.Add(lblTotalCreadosValor);
+        grpMetricas.Controls.Add(lblTotalFinalizados);
+        grpMetricas.Controls.Add(lblTotalFinalizadosValor);
+        grpMetricas.Controls.Add(lblEsperaPromedio);
+        grpMetricas.Controls.Add(lblEsperaPromedioValor);
+        grpMetricas.Controls.Add(lblPicoMemoria);
+        grpMetricas.Controls.Add(lblPicoMemoriaValor);
+        grpMetricas.Dock = DockStyle.Fill;
+        grpMetricas.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+        grpMetricas.ForeColor = Color.FromArgb(44, 62, 80);
+        grpMetricas.Location = new Point(3, 155);
+        grpMetricas.Name = "grpMetricas";
+        grpMetricas.Padding = new Padding(16);
+        grpMetricas.Size = new Size(562, 106);
+        grpMetricas.TabIndex = 1;
+        grpMetricas.TabStop = false;
+        grpMetricas.Text = "MÉTRICAS";
+
+        // lblTotalCreados
+        lblTotalCreados.AutoSize = true;
+        lblTotalCreados.Font = new Font("Segoe UI", 9F);
+        lblTotalCreados.ForeColor = Color.FromArgb(52, 73, 94);
+        lblTotalCreados.Location = new Point(20, 28);
+        lblTotalCreados.Name = "lblTotalCreados";
+        lblTotalCreados.Size = new Size(103, 15);
+        lblTotalCreados.TabIndex = 0;
+        lblTotalCreados.Text = "Procesos creados:";
+
+        // lblTotalCreadosValor
+        lblTotalCreadosValor.AutoSize = true;
+        lblTotalCreadosValor.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+        lblTotalCreadosValor.ForeColor = Color.FromArgb(44, 62, 80);
+        lblTotalCreadosValor.Location = new Point(220, 26);
+        lblTotalCreadosValor.Name = "lblTotalCreadosValor";
+        lblTotalCreadosValor.Size = new Size(15, 19);
+        lblTotalCreadosValor.TabIndex = 1;
+        lblTotalCreadosValor.Text = "0";
+
+        // lblTotalFinalizados
+        lblTotalFinalizados.AutoSize = true;
+        lblTotalFinalizados.Font = new Font("Segoe UI", 9F);
+        lblTotalFinalizados.ForeColor = Color.FromArgb(52, 73, 94);
+        lblTotalFinalizados.Location = new Point(300, 28);
+        lblTotalFinalizados.Name = "lblTotalFinalizados";
+        lblTotalFinalizados.Size = new Size(118, 15);
+        lblTotalFinalizados.TabIndex = 2;
+        lblTotalFinalizados.Text = "Procesos finalizados:";
+
+        // lblTotalFinalizadosValor
+        lblTotalFinalizadosValor.AutoSize = true;
+        lblTotalFinalizadosValor.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+        lblTotalFinalizadosValor.ForeColor = Color.FromArgb(44, 62, 80);
+        lblTotalFinalizadosValor.Location = new Point(470, 26);
+        lblTotalFinalizadosValor.Name = "lblTotalFinalizadosValor";
+        lblTotalFinalizadosValor.Size = new Size(15, 19);
+        lblTotalFinalizadosValor.TabIndex = 3;
+        lblTotalFinalizadosValor.Text = "0";
+
+        // lblEsperaPromedio
+        lblEsperaPromedio.AutoSize = true;
+        lblEsperaPromedio.Font = new Font("Segoe UI", 9F);
+        lblEsperaPromedio.ForeColor = Color.FromArgb(52, 73, 94);
+        lblEsperaPromedio.Location = new Point(20, 58);
+        lblEsperaPromedio.Name = "lblEsperaPromedio";
+        lblEsperaPromedio.Size = new Size(145, 15);
+        lblEsperaPromedio.TabIndex = 4;
+        lblEsperaPromedio.Text = "Espera promedio (seg.):";
+
+        // lblEsperaPromedioValor
+        lblEsperaPromedioValor.AutoSize = true;
+        lblEsperaPromedioValor.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+        lblEsperaPromedioValor.ForeColor = Color.FromArgb(52, 152, 219);
+        lblEsperaPromedioValor.Location = new Point(220, 56);
+        lblEsperaPromedioValor.Name = "lblEsperaPromedioValor";
+        lblEsperaPromedioValor.Size = new Size(25, 19);
+        lblEsperaPromedioValor.TabIndex = 5;
+        lblEsperaPromedioValor.Text = "0.0";
+
+        // lblPicoMemoria
+        lblPicoMemoria.AutoSize = true;
+        lblPicoMemoria.Font = new Font("Segoe UI", 9F);
+        lblPicoMemoria.ForeColor = Color.FromArgb(52, 73, 94);
+        lblPicoMemoria.Location = new Point(300, 58);
+        lblPicoMemoria.Name = "lblPicoMemoria";
+        lblPicoMemoria.Size = new Size(118, 15);
+        lblPicoMemoria.TabIndex = 6;
+        lblPicoMemoria.Text = "Pico de memoria (MB):";
+
+        // lblPicoMemoriaValor
+        lblPicoMemoriaValor.AutoSize = true;
+        lblPicoMemoriaValor.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+        lblPicoMemoriaValor.ForeColor = Color.FromArgb(231, 76, 60);
+        lblPicoMemoriaValor.Location = new Point(470, 56);
+        lblPicoMemoriaValor.Name = "lblPicoMemoriaValor";
+        lblPicoMemoriaValor.Size = new Size(44, 19);
+        lblPicoMemoriaValor.TabIndex = 7;
+        lblPicoMemoriaValor.Text = "0 MB";
 
         // lblRamTotal
         lblRamTotal.AutoSize = true;
@@ -351,7 +487,7 @@ partial class FormPrincipal
         grpEjecucion.Dock = DockStyle.Top;
         grpEjecucion.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpEjecucion.ForeColor = Color.FromArgb(44, 62, 80);
-        grpEjecucion.Location = new Point(0, 296);
+        grpEjecucion.Location = new Point(0, 356);
         grpEjecucion.Name = "grpEjecucion";
         grpEjecucion.Padding = new Padding(16, 20, 16, 16);
         grpEjecucion.Size = new Size(1184, 210);
@@ -389,7 +525,7 @@ partial class FormPrincipal
         grpEspera.Dock = DockStyle.Top;
         grpEspera.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpEspera.ForeColor = Color.FromArgb(44, 62, 80);
-        grpEspera.Location = new Point(0, 506);
+        grpEspera.Location = new Point(0, 566);
         grpEspera.Name = "grpEspera";
         grpEspera.Padding = new Padding(16, 20, 16, 16);
         grpEspera.Size = new Size(1184, 190);
@@ -427,7 +563,7 @@ partial class FormPrincipal
         grpFinalizados.Dock = DockStyle.Fill;
         grpFinalizados.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
         grpFinalizados.ForeColor = Color.FromArgb(44, 62, 80);
-        grpFinalizados.Location = new Point(0, 696);
+        grpFinalizados.Location = new Point(0, 756);
         grpFinalizados.Name = "grpFinalizados";
         grpFinalizados.Padding = new Padding(16, 20, 16, 16);
         grpFinalizados.Size = new Size(1184, 175);
@@ -463,7 +599,7 @@ partial class FormPrincipal
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = Color.FromArgb(236, 240, 241);
-        ClientSize = new Size(1184, 781);
+        ClientSize = new Size(1184, 901);
         Controls.Add(grpFinalizados);
         Controls.Add(grpEspera);
         Controls.Add(grpEjecucion);
@@ -476,8 +612,11 @@ partial class FormPrincipal
         layoutSuperior.ResumeLayout(false);
         grpCrearProceso.ResumeLayout(false);
         grpCrearProceso.PerformLayout();
+        layoutPanelDerecho.ResumeLayout(false);
         grpMemoria.ResumeLayout(false);
         grpMemoria.PerformLayout();
+        grpMetricas.ResumeLayout(false);
+        grpMetricas.PerformLayout();
         grpEjecucion.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)dgvEjecucion).EndInit();
         grpEspera.ResumeLayout(false);
