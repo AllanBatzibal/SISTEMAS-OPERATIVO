@@ -16,6 +16,7 @@ partial class FormPrincipal
     private Label lblDuracion;
     private TextBox txtDuracion;
     private Button btnAgregarProceso;
+    private Button btnGenerarAleatorios;
     private GroupBox grpMemoria;
     private Label lblRamTotal;
     private Label lblRamTotalValor;
@@ -60,6 +61,7 @@ partial class FormPrincipal
         lblDuracion = new Label();
         txtDuracion = new TextBox();
         btnAgregarProceso = new Button();
+        btnGenerarAleatorios = new Button();
         grpMemoria = new GroupBox();
         lblRamTotal = new Label();
         lblRamTotalValor = new Label();
@@ -149,6 +151,7 @@ partial class FormPrincipal
         grpCrearProceso.Controls.Add(txtMemoria);
         grpCrearProceso.Controls.Add(lblDuracion);
         grpCrearProceso.Controls.Add(txtDuracion);
+        grpCrearProceso.Controls.Add(btnGenerarAleatorios);
         grpCrearProceso.Controls.Add(btnAgregarProceso);
         grpCrearProceso.Dock = DockStyle.Fill;
         grpCrearProceso.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
@@ -224,11 +227,26 @@ partial class FormPrincipal
         btnAgregarProceso.ForeColor = Color.White;
         btnAgregarProceso.Location = new Point(20, 148);
         btnAgregarProceso.Name = "btnAgregarProceso";
-        btnAgregarProceso.Size = new Size(520, 38);
+        btnAgregarProceso.Size = new Size(250, 38);
         btnAgregarProceso.TabIndex = 4;
         btnAgregarProceso.Text = "AGREGAR PROCESO";
         btnAgregarProceso.UseVisualStyleBackColor = false;
         btnAgregarProceso.Click += btnAgregarProceso_Click;
+
+        // btnGenerarAleatorios
+        btnGenerarAleatorios.BackColor = Color.FromArgb(155, 89, 182);
+        btnGenerarAleatorios.Cursor = Cursors.Hand;
+        btnGenerarAleatorios.FlatAppearance.BorderSize = 0;
+        btnGenerarAleatorios.FlatStyle = FlatStyle.Flat;
+        btnGenerarAleatorios.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+        btnGenerarAleatorios.ForeColor = Color.White;
+        btnGenerarAleatorios.Location = new Point(290, 148);
+        btnGenerarAleatorios.Name = "btnGenerarAleatorios";
+        btnGenerarAleatorios.Size = new Size(250, 38);
+        btnGenerarAleatorios.TabIndex = 5;
+        btnGenerarAleatorios.Text = "GENERAR PROCESOS ALEATORIOS";
+        btnGenerarAleatorios.UseVisualStyleBackColor = false;
+        btnGenerarAleatorios.Click += btnGenerarAleatorios_Click;
 
         // grpMemoria
         grpMemoria.Controls.Add(lblRamTotal);

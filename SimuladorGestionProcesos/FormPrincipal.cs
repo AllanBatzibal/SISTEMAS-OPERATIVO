@@ -9,6 +9,25 @@ namespace SimuladorGestionProcesos;
 public partial class FormPrincipal : Form
 {
     private readonly GestorProcesos _gestor = new();
+    private readonly Random _generadorAleatorio = new();
+
+    private static readonly string[] NombresProcesosAleatorios =
+    [
+        "Chrome",
+        "VisualStudio",
+        "Spotify",
+        "Discord",
+        "AntivirusScan",
+        "Backup",
+        "ServidorWeb",
+        "MySQL",
+        "Docker",
+        "Teams",
+        "Photoshop",
+        "Compilador",
+        "Indexador",
+        "Actualizador"
+    ];
 
     public FormPrincipal()
     {
@@ -167,6 +186,64 @@ public partial class FormPrincipal : Form
         {
             btnAgregarProceso.Enabled = true;
         }
+    }
+
+    private async void btnGenerarAleatorios_Click(object sender, EventArgs e)
+    {
+        using var dialogo = new DialogoCantidadProcesos();
+
+        if (dialogo.ShowDialog(this) != DialogResult.OK)
+        {
+            return;
+        }
+
+        int cantidad = dialogo.CantidadSeleccionada;
+        btnGenerarAleatorios.Enabled = false;
+
+        try
+        {
+            var errores = await Task.Run(() => GenerarProcesosAleatorios(cantidad));
+
+            if (errores.Count > 0)
+            {
+                MessageBox.Show(
+                    string.Join(Environment.NewLine, errores),
+                    "Validación",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+        }
+        finally
+        {
+            btnGenerarAleatorios.Enabled = true;
+        }
+    }
+
+    /// <summary>
+    /// Genera procesos aleatorios y los agrega mediante la lógica existente del gestor.
+    /// </summary>
+    private List<string> GenerarProcesosAleatorios(int cantidad)
+    {
+        var errores = new List<string>();
+
+        for (int i = 0; i < cantidad; i++)
+        {
+            string nombreBase = NombresProcesosAleatorios[
+                _generadorAleatorio.Next(NombresProcesosAleatorios.Length)];
+
+            string nombre = $"{nombreBase}_{_generadorAleatorio.Next(100, 9999)}";
+            int memoria = _generadorAleatorio.Next(50, 401);
+            int duracion = _generadorAleatorio.Next(5, 21);
+
+            var resultado = _gestor.AgregarProceso(nombre, memoria, duracion);
+
+            if (!resultado.Exito && resultado.Error is not null)
+            {
+                errores.Add($"Proceso {i + 1}: {resultado.Error}");
+            }
+        }
+
+        return errores;
     }
 
     private void Gestor_SimulacionActualizada()
