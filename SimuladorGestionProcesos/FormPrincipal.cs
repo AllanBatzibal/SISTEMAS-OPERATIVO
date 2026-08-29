@@ -124,7 +124,7 @@ public partial class FormPrincipal : Form
         }
     }
 
-    private async void btnAgregarProceso_Click(object sender, EventArgs e)
+    private async void btnAgregarProceso_Click(object? sender, EventArgs e)
     {
         btnAgregarProceso.Enabled = false;
 
@@ -146,36 +146,6 @@ public partial class FormPrincipal : Form
             {
                 MessageBox.Show(
                     "Ingrese un valor numérico válido para la duración.",
-                    "Validación",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (memoria <= 0)
-            {
-                MessageBox.Show(
-                    "La memoria requerida debe ser mayor que 0 MB.",
-                    "Validación",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (memoria > GestorProcesos.MEMORIA_TOTAL)
-            {
-                MessageBox.Show(
-                    "La memoria requerida no puede ser mayor a 1024 MB.",
-                    "Validación",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (duracion <= 0)
-            {
-                MessageBox.Show(
-                    "La duración debe ser mayor que 0 segundos.",
                     "Validación",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
