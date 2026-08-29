@@ -19,4 +19,15 @@ public class GeneradorPID
             return _contador;
         }
     }
+
+    /// <summary>
+    /// Reinicia el contador de PID para comenzar una simulación desde cero.
+    /// </summary>
+    public void Reiniciar()
+    {
+        lock (_bloqueo)
+        {
+            _contador = 0;
+        }
+    }
 }

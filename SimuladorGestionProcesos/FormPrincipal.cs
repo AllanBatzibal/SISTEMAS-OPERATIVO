@@ -371,6 +371,37 @@ public partial class FormPrincipal : Form
         }
     }
 
+    private async void btnReiniciarSimulacion_Click(object sender, EventArgs e)
+    {
+        DialogResult confirmacion = MessageBox.Show(
+            "¿Desea reiniciar la simulación? Se cancelarán todos los procesos y se restablecerá la memoria RAM.",
+            "Reiniciar simulación",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirmacion != DialogResult.Yes)
+        {
+            return;
+        }
+
+        btnReiniciarSimulacion.Enabled = false;
+
+        try
+        {
+            await Task.Run(() => _gestor.Reiniciar());
+
+            txtNombre.Clear();
+            txtMemoria.Clear();
+            txtDuracion.Clear();
+
+            ActualizarInterfaz();
+        }
+        finally
+        {
+            btnReiniciarSimulacion.Enabled = true;
+        }
+    }
+
     protected override void OnFormClosed(FormClosedEventArgs e)
     {
         _gestor.SimulacionActualizada -= Gestor_SimulacionActualizada;

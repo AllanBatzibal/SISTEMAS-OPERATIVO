@@ -218,6 +218,36 @@ public class GestorProcesos
         return cancelado;
     }
 
+    /// <summary>
+    /// Restablece el simulador a su estado inicial vaciando colecciones y memoria.
+    /// </summary>
+    public void Reiniciar()
+    {
+        lock (_bloqueo)
+        {
+            // Marca los procesos en ejecución como cancelados para que las tareas
+            // async en curso salgan de su ciclo sin modificar el estado reiniciado.
+            foreach (var proceso in ProcesosEjecucion)
+            {
+                proceso.Estado = "Cancelado";
+                proceso.EnEjecucionActiva = false;
+            }
+
+            ProcesosEjecucion.Clear();
+
+            while (ColaEspera.Count > 0)
+            {
+                ColaEspera.Dequeue();
+            }
+
+            ProcesosFinalizados.Clear();
+            _memoriaUtilizada = 0;
+            _generadorPid.Reiniciar();
+        }
+
+        NotificarActualizacion();
+    }
+
     private static string? ValidarDatos(int memoria, int duracion)
     {
         if (memoria <= 0)

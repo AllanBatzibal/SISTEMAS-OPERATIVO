@@ -6,6 +6,7 @@ partial class FormPrincipal
 
     private Panel panelEncabezado;
     private Label lblTitulo;
+    private Button btnReiniciarSimulacion;
     private TableLayoutPanel layoutSuperior;
     private GroupBox grpCrearProceso;
     private Label lblNombre;
@@ -49,6 +50,7 @@ partial class FormPrincipal
         components = new System.ComponentModel.Container();
         panelEncabezado = new Panel();
         lblTitulo = new Label();
+        btnReiniciarSimulacion = new Button();
         layoutSuperior = new TableLayoutPanel();
         grpCrearProceso = new GroupBox();
         lblNombre = new Label();
@@ -90,6 +92,7 @@ partial class FormPrincipal
 
         // panelEncabezado
         panelEncabezado.BackColor = Color.FromArgb(44, 62, 80);
+        panelEncabezado.Controls.Add(btnReiniciarSimulacion);
         panelEncabezado.Controls.Add(lblTitulo);
         panelEncabezado.Dock = DockStyle.Top;
         panelEncabezado.Location = new Point(0, 0);
@@ -97,6 +100,22 @@ partial class FormPrincipal
         panelEncabezado.Padding = new Padding(20, 16, 20, 16);
         panelEncabezado.Size = new Size(1184, 64);
         panelEncabezado.TabIndex = 0;
+
+        // btnReiniciarSimulacion
+        btnReiniciarSimulacion.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        btnReiniciarSimulacion.BackColor = Color.FromArgb(149, 165, 166);
+        btnReiniciarSimulacion.Cursor = Cursors.Hand;
+        btnReiniciarSimulacion.FlatAppearance.BorderSize = 0;
+        btnReiniciarSimulacion.FlatStyle = FlatStyle.Flat;
+        btnReiniciarSimulacion.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+        btnReiniciarSimulacion.ForeColor = Color.White;
+        btnReiniciarSimulacion.Location = new Point(984, 16);
+        btnReiniciarSimulacion.Name = "btnReiniciarSimulacion";
+        btnReiniciarSimulacion.Size = new Size(180, 32);
+        btnReiniciarSimulacion.TabIndex = 1;
+        btnReiniciarSimulacion.Text = "REINICIAR SIMULACIÓN";
+        btnReiniciarSimulacion.UseVisualStyleBackColor = false;
+        btnReiniciarSimulacion.Click += btnReiniciarSimulacion_Click;
 
         // lblTitulo
         lblTitulo.AutoSize = true;
