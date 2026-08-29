@@ -1,0 +1,285 @@
+using SimuladorGestionProcesos.Models;
+using SimuladorGestionProcesos.Utils;
+
+namespace SimuladorGestionProcesos.Services;
+
+/// <summary>
+/// Administra la memoria RAM, los procesos en ejecución, la cola de espera
+/// y la liberación automática de recursos del simulador.
+/// </summary>
+public class GestorProcesos
+{
+    public const int MEMORIA_TOTAL = 1024;
+
+    private int _memoriaUtilizada;
+    private readonly object _bloqueo = new();
+    private readonly GeneradorPID _generadorPid = new();
+
+    public List<Proceso> ProcesosEjecucion { get; } = new();
+    public Queue<Proceso> ColaEspera { get; } = new();
+    public List<Proceso> ProcesosFinalizados { get; } = new();
+
+    /// <summary>
+    /// Se dispara cuando cambia el estado de memoria o de algún proceso.
+    /// </summary>
+    public event Action? SimulacionActualizada;
+
+    public int MemoriaUtilizada
+    {
+        get
+        {
+            lock (_bloqueo)
+            {
+                return _memoriaUtilizada;
+            }
+        }
+    }
+
+    public int MemoriaDisponible => MEMORIA_TOTAL - MemoriaUtilizada;
+
+    /// <summary>
+    /// Crea un proceso, valida los datos y lo envía a ejecución o a la cola FIFO.
+    /// </summary>
+    public (bool Exito, string? Error, Proceso? Proceso) AgregarProceso(string nombre, int memoria, int duracion)
+    {
+        string? errorValidacion = ValidarDatos(memoria, duracion);
+        if (errorValidacion is not null)
+        {
+            return (false, errorValidacion, null);
+        }
+
+        int pid = _generadorPid.ObtenerSiguientePID();
+        string nombreFinal = string.IsNullOrWhiteSpace(nombre)
+            ? $"Proceso_{pid}"
+            : nombre.Trim();
+
+        var proceso = new Proceso
+        {
+            PID = pid,
+            Nombre = nombreFinal,
+            MemoriaRequerida = memoria,
+            Duracion = duracion,
+            TiempoRestante = duracion,
+            Estado = "Nuevo"
+        };
+
+        lock (_bloqueo)
+        {
+            // Verifica si existe memoria RAM suficiente para iniciar la ejecución del proceso.
+            if (ObtenerMemoriaDisponibleInterna() >= proceso.MemoriaRequerida)
+            {
+                IniciarProcesoInterno(proceso);
+            }
+            else
+            {
+                proceso.Estado = "En espera";
+                ColaEspera.Enqueue(proceso);
+            }
+        }
+
+        NotificarActualizacion();
+        return (true, null, proceso);
+    }
+
+    /// <summary>
+    /// Intenta iniciar un proceso reservando memoria e iniciando su ejecución asíncrona.
+    /// </summary>
+    public void IniciarProceso(Proceso proceso)
+    {
+        lock (_bloqueo)
+        {
+            IniciarProcesoInterno(proceso);
+        }
+
+        NotificarActualizacion();
+    }
+
+    /// <summary>
+    /// Simula la ejecución del proceso decrementando el tiempo restante cada segundo.
+    /// </summary>
+    public async Task EjecutarProcesoAsync(Proceso proceso)
+    {
+        try
+        {
+            while (proceso.TiempoRestante > 0 && proceso.Estado == "Ejecutando")
+            {
+                await Task.Delay(1000).ConfigureAwait(false);
+
+                lock (_bloqueo)
+                {
+                    if (proceso.Estado != "Ejecutando" || proceso.TiempoRestante <= 0)
+                    {
+                        break;
+                    }
+
+                    proceso.TiempoRestante--;
+                }
+
+                NotificarActualizacion();
+            }
+
+            lock (_bloqueo)
+            {
+                if (proceso.Estado == "Ejecutando" && proceso.TiempoRestante <= 0)
+                {
+                    FinalizarProcesoInterno(proceso);
+                }
+            }
+
+            NotificarActualizacion();
+        }
+        finally
+        {
+            lock (_bloqueo)
+            {
+                proceso.EnEjecucionActiva = false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Marca un proceso como finalizado, libera memoria y revisa la cola de espera.
+    /// </summary>
+    public void FinalizarProceso(Proceso proceso)
+    {
+        lock (_bloqueo)
+        {
+            FinalizarProcesoInterno(proceso);
+        }
+
+        NotificarActualizacion();
+    }
+
+    /// <summary>
+    /// Libera la memoria RAM ocupada por un proceso finalizado.
+    /// </summary>
+    public void LiberarMemoria(Proceso proceso)
+    {
+        lock (_bloqueo)
+        {
+            LiberarMemoriaInterna(proceso);
+        }
+    }
+
+    /// <summary>
+    /// Revisa la cola FIFO e intenta ejecutar procesos cuando hay memoria disponible.
+    /// </summary>
+    public void RevisarColaEspera()
+    {
+        lock (_bloqueo)
+        {
+            RevisarColaEsperaInterna();
+        }
+
+        NotificarActualizacion();
+    }
+
+    /// <summary>
+    /// Obtiene la memoria RAM disponible en MB.
+    /// </summary>
+    public int ObtenerMemoriaDisponible()
+    {
+        lock (_bloqueo)
+        {
+            return ObtenerMemoriaDisponibleInterna();
+        }
+    }
+
+    private static string? ValidarDatos(int memoria, int duracion)
+    {
+        if (memoria <= 0)
+        {
+            return "La memoria requerida debe ser mayor que 0 MB.";
+        }
+
+        if (memoria > MEMORIA_TOTAL)
+        {
+            return "La memoria requerida no puede ser mayor a 1024 MB.";
+        }
+
+        if (duracion <= 0)
+        {
+            return "La duración debe ser mayor que 0 segundos.";
+        }
+
+        return null;
+    }
+
+    private void IniciarProcesoInterno(Proceso proceso)
+    {
+        if (proceso.EnEjecucionActiva || proceso.Estado == "Ejecutando" || proceso.Estado == "Finalizado")
+        {
+            return;
+        }
+
+        if (ObtenerMemoriaDisponibleInterna() < proceso.MemoriaRequerida)
+        {
+            return;
+        }
+
+        _memoriaUtilizada += proceso.MemoriaRequerida;
+        proceso.Estado = "Ejecutando";
+        proceso.TiempoRestante = proceso.Duracion;
+        proceso.EnEjecucionActiva = true;
+        ProcesosEjecucion.Add(proceso);
+
+        _ = EjecutarProcesoAsync(proceso);
+    }
+
+    private void FinalizarProcesoInterno(Proceso proceso)
+    {
+        if (proceso.Estado == "Finalizado")
+        {
+            return;
+        }
+
+        proceso.Estado = "Finalizado";
+        proceso.TiempoRestante = 0;
+        ProcesosEjecucion.Remove(proceso);
+        ProcesosFinalizados.Add(proceso);
+
+        LiberarMemoriaInterna(proceso);
+        RevisarColaEsperaInterna();
+    }
+
+    private void LiberarMemoriaInterna(Proceso proceso)
+    {
+        if (proceso.MemoriaRequerida <= 0)
+        {
+            return;
+        }
+
+        _memoriaUtilizada -= proceso.MemoriaRequerida;
+
+        if (_memoriaUtilizada < 0)
+        {
+            _memoriaUtilizada = 0;
+        }
+    }
+
+    private void RevisarColaEsperaInterna()
+    {
+        while (ColaEspera.Count > 0)
+        {
+            Proceso siguiente = ColaEspera.Peek();
+
+            if (ObtenerMemoriaDisponibleInterna() < siguiente.MemoriaRequerida)
+            {
+                break;
+            }
+
+            ColaEspera.Dequeue();
+            IniciarProcesoInterno(siguiente);
+        }
+    }
+
+    private int ObtenerMemoriaDisponibleInterna()
+    {
+        return MEMORIA_TOTAL - _memoriaUtilizada;
+    }
+
+    private void NotificarActualizacion()
+    {
+        SimulacionActualizada?.Invoke();
+    }
+}
